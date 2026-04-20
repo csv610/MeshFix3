@@ -55,6 +55,22 @@ MeshFix is optimized for **raw digitized meshes** (e.g., from 3D scans) and addr
 *   **Hole Patching:** Identifies boundary loops and fills them to make the model **watertight**.
 *   **Component Joining:** Bridges gaps between separate components when their boundaries are sufficiently close.
 
+## Example Dataset
+
+The `dataset/` directory contains several minimal examples of mesh errors used for testing and demonstration:
+
+*   `hole.off`: A cube with one missing face (hole).
+*   `degenerate_needle.off`: A triangle with nearly coincident vertices.
+*   `degenerate_cap.off`: A flat triangle (vertex on opposite edge).
+*   `normals.off`: Two triangles with inconsistent orientations.
+*   `noise.off`: A cube with an isolated tiny component.
+*   `intersect.off`: Two self-intersecting triangles.
+
+To test MeshFix on these examples, you can run:
+```bash
+python3 tests/test_dataset.py
+```
+
 ## Supported Formats
 
 MeshFix supports a wide range of industry-standard 3D formats for both input and output:

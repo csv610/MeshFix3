@@ -1,8 +1,35 @@
-# MeshFix V2.1
+# MeshFix V2.1 (Modernized Port)
+
+> **Disclaimer:** This project is a modernized port of the original **MeshFix** developed by **Marco Attene**. I take no credit for the original algorithms, research, or core logic. This version is intended to provide a cleaner, more modern interface for macOS and Linux users. The original source code and research remain the intellectual property of the original author and IMATI-GE / CNR.
 
 **MeshFix** is a lightweight, self-contained tool designed to repair digitized polygon meshes. It automatically corrects common defects in raw digitized models, such as singularities, self-intersections, and degenerate elements, producing a single watertight manifold triangle mesh.
 
-Developed by **Marco Attene** at IMATI-GE / CNR.
+Original Author: **Marco Attene** at IMATI-GE / CNR.
+
+---
+
+## Modifications in this Port
+
+This version introduces several changes to the original 2016 codebase to improve usability and maintainability on modern systems:
+
+1.  **Modern C++20 Standards:**
+    *   Updated the build system to require C++20.
+    *   Implemented the **spaceship operator (`<=>`)** for the `Point` class to simplify and modernize comparisons.
+    *   Replaced raw string comparisons with **`std::string_view`** for more efficient argument parsing.
+    *   Introduced **`std::span`** for safer orientation predicate interfaces.
+2.  **Enhanced Command-Line Interface:**
+    *   Added a `-h` flag to display detailed usage and help information.
+    *   Added an explicit `-o <filename>` flag to specify the output path (while maintaining backward compatibility for positional arguments).
+3.  **Removed Windows Dependency:**
+    *   Deleted all `vc12` Visual Studio project files and `.exe` binaries.
+    *   Removed MSVC-specific macros and compiler guards to focus on a clean macOS/Linux experience.
+4.  **Improved Build & Infrastructure:**
+    *   Streamlined `CMakeLists.txt` for modern compilers.
+    *   Added a `.gitignore` to keep the repository clean of build artifacts.
+    *   Added a professional `README.md` (this file).
+5.  **New Testing Suite:**
+    *   Added a **Python integration test suite** (`tests/test_cli.py`) to verify CLI behavior.
+    *   Added a **C++ unit test suite** (`tests/unit_tests.cpp`) to validate core geometry logic.
 
 ---
 

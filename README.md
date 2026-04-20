@@ -33,13 +33,27 @@ This version introduces several changes to the original 2016 codebase to improve
 
 ---
 
-## Features
+## Errors Fixed by MeshFix
 
-- **Automated Repair:** Fixes holes, self-intersections, and degeneracies.
-- **Watertight Output:** Ensures the resulting mesh represents a single closed solid object.
-- **Component Joining:** Optional joining of close open components.
-- **High Portability:** Standard ANSI C++ with no external dependencies.
-- **Command-Line Interface:** Easy to integrate into automated scripts and pipelines.
+MeshFix is optimized for **raw digitized meshes** (e.g., from 3D scans) and addresses several categories of geometric and topological flaws:
+
+### 1. Degenerate Elements
+*   **Needles:** Triangles with one extremely short edge (nearly coincident vertices).
+*   **Caps:** "Flat" triangles where one vertex lies on or near the opposite edge.
+*   **Coincident Vertices:** Different vertex entries sharing the exact same spatial coordinates.
+
+### 2. Connectivity & Topological Errors
+*   **Singularities:** Non-manifold links where surfaces meet at a single point or edge incorrectly.
+*   **Inconsistent Normals:** Automatically re-orients triangles to ensure a consistent "inside" vs. "outside."
+*   **Noise Removal:** Removes isolated small components (scanning artifacts), keeping only the largest connected object.
+
+### 3. Geometric Flaws
+*   **Self-Intersections:** Detects and resolves cases where the mesh surface passes through itself.
+*   **Overlapping Triangles:** Identifies and eliminates redundant triangles occupying the same space.
+
+### 4. Holes and Boundaries
+*   **Hole Patching:** Identifies boundary loops and fills them to make the model **watertight**.
+*   **Component Joining:** Bridges gaps between separate components when their boundaries are sufficiently close.
 
 ## Supported Formats
 

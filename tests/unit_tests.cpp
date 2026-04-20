@@ -16,16 +16,19 @@ void test_point_basics() {
     assert(p3.x == 5.0);
     assert(p3.y == 7.0);
     assert(p3.z == 9.0);
+    (void)p3;
     
     // Subtraction
     Point p4 = p2 - p1;
     assert(p4.x == 3.0);
     assert(p4.y == 3.0);
     assert(p4.z == 3.0);
+    (void)p4;
     
     // Dot Product
     coord dot = p1 * p2;
     assert(dot == (1.0*4.0 + 2.0*5.0 + 3.0*6.0));
+    (void)dot;
     
     // Cross Product
     Point cross = p1 & p2;
@@ -33,12 +36,14 @@ void test_point_basics() {
     assert(cross.x == -3.0);
     assert(cross.y == 6.0);
     assert(cross.z == -3.0);
+    (void)cross;
     
     // Scalar multiplication
     Point p5 = p1 * 2.0;
     assert(p5.x == 2.0);
     assert(p5.y == 4.0);
     assert(p5.z == 6.0);
+    (void)p5;
 
     std::cout << "Point basics passed!" << std::endl;
 }

@@ -486,8 +486,7 @@ void mc_grid::sample_triangle(Triangle *t)
  int i, j;
  Point p;
  UBYTE sg;
- Point normal(t->getVector());
-
+ 
  p = (*v1)+Point(0,0,1); sg = (p.exactOrientation(v1, v2, v3) < 0)?(1):(0);
  for (i = TMESH_TO_INT(minx); i <= TMESH_TO_INT(Mx); i++)
   for (j = TMESH_TO_INT(miny); j <= TMESH_TO_INT(My); j++)
@@ -680,7 +679,7 @@ void mc_cell::merge(mc_cell *m)
 
 List *mc_grid::createCells()
 {
- int i,j,k,numcells=numrays+1;
+ int i,j,k;
  mc_ints *m;
  Node *n;
  List *ac = new List;
@@ -758,7 +757,7 @@ List *mc_grid::createCells()
 
 void mc_grid::trackOuterHull()
 {
-	int i, j, numcells = numrays + 1;
+	int i, j;
 	mc_ints *m1, *m2;
 	Edge *e0;
 	Triangle *t0;

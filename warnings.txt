@@ -1,0 +1,187 @@
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/tin.cpp:434:3: error: use of undeclared identifier 't'
+  434 |                 t = EulerEdgeTriangle(gve, gwe);
+      |                 ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/tin.cpp:447:2: error: use of undeclared identifier 't'
+  447 |         t = CreateTriangle(je, gwe, je1);
+      |         ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/tin.cpp:448:2: error: use of undeclared identifier 't'
+  448 |         t = CreateTriangle(je1, je2, gve);
+      |         ^
+3 errors generated.
+make[2]: *** [CMakeFiles/unit_tests.dir/src/TMesh/tin.cpp.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:365:87: error: use of undeclared identifier 'cx'
+  365 |  while (fscanf(fp, "%f %f %f,", &x, &y, &z) == 3) { V.appendTail(newVertex(x, y, z)); cx = coord(x); /*printf("%f %f\n", x, cx.toFloat());*/ }
+      |                                                                                       ^~
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:720:20: error: use of undeclared identifier 't'
+  720 |    FOREACHTRIANGLE(t, n)
+      |                    ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:365:87: error: use of undeclared identifier 'cx'
+  365 |  while (fscanf(fp, "%f %f %f,", &x, &y, &z) == 3) { V.appendTail(newVertex(x, y, z)); cx = coord(x); /*printf("%f %f\n", x, cx.toFloat());*/ }
+      |                                                                                       ^~
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:720:20: error: use of undeclared identifier 't'
+  720 |    FOREACHTRIANGLE(t, n)
+      |                    ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:722:37: error: use of undeclared identifier 't'
+  722 |     pkc = (unsigned int)((j_voidint)t->info);
+      |                                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:720:23: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  720 |    FOREACHTRIANGLE(t, n)
+      |                       ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:720:20: error: use of undeclared identifier 't'
+  720 |    FOREACHTRIANGLE(t, n)
+      |                    ^
+:751:18: error: use of undeclared identifier 't'
+  751 |  FOREACHTRIANGLE(t, n)
+      |                  ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:720:20: error: use of undeclared identifier 't'
+  720 |    FOREACHTRIANGLE(t, n)
+      |                    ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:751:18: error: use of undeclared identifier 't'
+  751 |  FOREACHTRIANGLE(t, n)
+      |                  ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:722:37: error: use of undeclared identifier 't'
+  722 |     pkc = (unsigned int)((j_voidint)t->info);
+      |                                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:720:23: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  720 |    FOREACHTRIANGLE(t, n)
+      |                       ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:752:52: error: use of undeclared identifier 't'
+  752 |          fprintf(fp, "   %d, %d, %d, -1,\n", TMESH_TO_INT(t->v1()->x), TMESH_TO_INT(t->v2()->x), TMESH_TO_INT(t->v3()->x));
+      |                                                           ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:752:78: error: use of undeclared identifier 't'
+  752 |          fprintf(fp, "   %d, %d, %d, -1,\n", TMESH_TO_INT(t->v1()->x), TMESH_TO_INT(t->v2()->x), TMESH_TO_INT(t->v3()->x));
+      |                                                                                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:751:18: error: use of undeclared identifier 't'
+  751 |  FOREACHTRIANGLE(t, n)
+      |                  ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:752:104: error: use of undeclared identifier 't'
+  752 |          fprintf(fp, "   %d, %d, %d, -1,\n", TMESH_TO_INT(t->v1()->x), TMESH_TO_INT(t->v2()->x), TMESH_TO_INT(t->v3()->x));
+      |                                                                                                               ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:751:21: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  751 |  FOREACHTRIANGLE(t, n)
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:762:21: error: use of undeclared identifier 't'
+  762 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",t->mask);
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:762:21: error: use of undeclared identifier 't'
+  762 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",t->mask);
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:762:49: error: use of undeclared identifier 't'
+  762 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",t->mask);
+      |                                                 ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:762:24: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  762 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",t->mask);
+      |                        ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:751:18: error: use of undeclared identifier 't'
+  751 |  FOREACHTRIANGLE(t, n)
+      |                  ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:752:52: error: use of undeclared identifier 't'
+  752 |          fprintf(fp, "   %d, %d, %d, -1,\n", TMESH_TO_INT(t->v1()->x), TMESH_TO_INT(t->v2()->x), TMESH_TO_INT(t->v3()->x));
+      |                                                           ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:752:78: error: use of undeclared identifier 't'
+  752 |          fprintf(fp, "   %d, %d, %d, -1,\n", TMESH_TO_INT(t->v1()->x), TMESH_TO_INT(t->v2()->x), TMESH_TO_INT(t->v3()->x));
+      |                                                                                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:752:104: error: use of undeclared identifier 't'
+  752 |          fprintf(fp, "   %d, %d, %d, -1,\n", TMESH_TO_INT(t->v1()->x), TMESH_TO_INT(t->v2()->x), TMESH_TO_INT(t->v3()->x));
+      |                                                                                                               ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:751:21: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  751 |  FOREACHTRIANGLE(t, n)
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:762:21: error: use of undeclared identifier 't'
+  762 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",t->mask);
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:762:21: error: use of undeclared identifier 't'
+  762 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",t->mask);
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:21: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:21: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:61: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                                                             ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:75: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                                                                           ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:89: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                                                                                         ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:24: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                        ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:768:26: error: use of undeclared identifier 't'
+  768 |     i=0; FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",i++);
+      |                          ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:768:26: error: use of undeclared identifier 't'
+  768 |     i=0; FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",i++);
+      |                          ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:768:29: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  768 |     i=0; FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",i++);
+      |                             ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:762:49: error: use of undeclared identifier 't'
+  762 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",t->mask);
+      |                                                 ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:762:24: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  762 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",t->mask);
+      |                        ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:21: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:21: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                     ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:61: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                                                             ^
+5 warnings and 20 errors generated.
+make[2]: *** [CMakeFiles/unit_tests.dir/src/TMesh/io.cpp.o] Error 1
+make[1]: *** [CMakeFiles/unit_tests.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:75: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                                                                           ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:89: error: use of undeclared identifier 't'
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                                                                                         ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:765:24: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  765 |     FOREACHTRIANGLE(t, n) fprintf(fp,"   %d, %d, %d, -1,\n",t->v1()->mask,t->v2()->mask,t->v3()->mask);
+      |                        ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:768:26: error: use of undeclared identifier 't'
+  768 |     i=0; FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",i++);
+      |                          ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:768:26: error: use of undeclared identifier 't'
+  768 |     i=0; FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",i++);
+      |                          ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/io.cpp:768:29: warning: variable 'n' used in loop condition not modified in loop body [-Wfor-loop-analysis]
+  768 |     i=0; FOREACHTRIANGLE(t, n) fprintf(fp,"   %d,\n",i++);
+      |                             ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+5 warnings and 20 errors generated.
+make[2]: *** [CMakeFiles/MeshFix.dir/src/TMesh/io.cpp.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/Algorithms/holeFilling.cpp:538:4: error: use of undeclared identifier 'tbds'
+  538 |    tbds++;
+      |    ^~~~
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/Algorithms/marchIntersections.cpp:760:12: warning: unused variable 'numcells' [-Wunused-variable]
+  760 |         int i, j, numcells = numrays + 1;
+      |                   ^~~~~~~~
+1 error generated.
+make[2]: *** [CMakeFiles/MeshFix.dir/src/Algorithms/holeFilling.cpp.o] Error 1
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/tin.cpp:434:3: error: use of undeclared identifier 't'
+  434 |                 t = EulerEdgeTriangle(gve, gwe);
+      |                 ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/tin.cpp:447:2: error: use of undeclared identifier 't'
+  447 |         t = CreateTriangle(je, gwe, je1);
+      |         ^
+/Users/csv610/Projects/Mesh/MeshFix-V2.1/src/TMesh/tin.cpp:448:2: error: use of undeclared identifier 't'
+  448 |         t = CreateTriangle(je1, je2, gve);
+      |         ^
+3 errors generated.
+make[2]: *** [CMakeFiles/MeshFix.dir/src/TMesh/tin.cpp.o] Error 1
+1 warning generated.
+make[1]: *** [CMakeFiles/MeshFix.dir/all] Error 2
+make: *** [all] Error 2

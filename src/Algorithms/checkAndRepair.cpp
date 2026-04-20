@@ -282,7 +282,7 @@ int Basic_TMesh::mergeCoincidentEdges()
 		if (e->v2->info != e->v2) e->v2 = (Vertex *)e->v2->info;
 		e->v1->e0 = e->v2->e0 = e;
 	}
-	int rv = removeVertices();
+	removeVertices();
 
 	// At this point the mesh should no longer have duplicated vertices, but may have duplicated edges
 	E.sort(&vtxEdgeCompare);
@@ -296,7 +296,7 @@ int Basic_TMesh::mergeCoincidentEdges()
 	{
 		Triangle *t1 = e->getBoundaryTriangle();
 		Edge *f = ((Edge *)e->info);
-		Triangle *t2 = f->getBoundaryTriangle();
+		f->getBoundaryTriangle();
 		t1->replaceEdge(e, f);
 		((f->t1 == NULL) ? (f->t1) : (f->t2)) = t1;
 		e->v1 = e->v2 = NULL;
@@ -348,7 +348,7 @@ bool Basic_TMesh::rebuildConnectivity(bool fixconnectivity) //!< AMF_CHANGE 1.1>
   if (e->v2->info != e->v2) e->v2 = (Vertex *)e->v2->info;
   e->v1->e0 = e->v2->e0 = e;
  }
- int rv = removeVertices();
+ removeVertices();
 
  // At this point the mesh should no longer have duplicated vertices, but may have duplicated edges
 

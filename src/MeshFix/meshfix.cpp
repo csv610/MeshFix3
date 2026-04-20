@@ -82,7 +82,6 @@ bool joinClosestComponents(Basic_TMesh *tin)
 	bloops_array = (List **)boundary_loops.toArray();
 	numloops = boundary_loops.numels();
 
-	int numtris = tin->T.numels();
 	double adist, mindist = DBL_MAX;
 
 	gv = NULL;

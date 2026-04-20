@@ -357,14 +357,12 @@ int Basic_TMesh::loadVRML1(const char *fname)
  int i,i1,i2,i3,i4,nv=0,triangulate=0;
  Vertex *v;
 
- coord cx;
-
  if ((fp = fopen(fname,"r")) == NULL) return IO_CANTOPEN;
 
  if (!seek_keyword(fp, "point")) {closeLoadingSession(fp, 0, NULL, 0); return IO_FORMAT;}
  if (!seek_keyword(fp, "[")) {closeLoadingSession(fp, 0, NULL, 0); return IO_FORMAT;}
 
- while (fscanf(fp, "%f %f %f,", &x, &y, &z) == 3) { V.appendTail(newVertex(x, y, z)); cx = coord(x); /*printf("%f %f\n", x, cx.toFloat());*/ }
+ while (fscanf(fp, "%f %f %f,", &x, &y, &z) == 3) { V.appendTail(newVertex(x, y, z)); }
  nv = V.numels();
  ExtVertex **var = (ExtVertex **)malloc(sizeof(ExtVertex *)*nv);
  i = 0; FOREACHVERTEX(v, n) var[i++] = new ExtVertex(v);
@@ -473,7 +471,7 @@ int Basic_TMesh::loadEFF(const char *fname)
 	Node *n;
 	char s[256];
 	coord x, y, z;
-	int i, i1, i2, i3, nv=-1, nt=-1, triangulate = 0;
+	int i, i1, i2, i3, nv=-1, nt=-1;
 	Vertex *v;
 
 
@@ -1465,7 +1463,6 @@ int Basic_TMesh::loadSTL(const char *fname)
  bool binary=0;
  Vertex *v, *v1=NULL, *v2=NULL, *v3=NULL;
  Edge *e1, *e2, *e3;
- Triangle *t;
  Point nor;
 
  if ((fp = fopen(fname,"r")) == NULL) return IO_CANTOPEN;
@@ -1502,8 +1499,8 @@ int Basic_TMesh::loadSTL(const char *fname)
    v3 = newVertex((*((float *)(facet+36))), (*((float *)(facet+40))), (*((float *)(facet+44))));
    V.appendHead(v1); V.appendHead(v2); V.appendHead(v3);
    e1=CreateEdge(v1, v2); e2=CreateEdge(v2, v3); e3=CreateEdge(v3, v1);
-   if (Triangle(e1,e2,e3).getNormal()*nor < 0) t=CreateTriangle(e1, e3, e2);
-   else t=CreateTriangle(e1, e2, e3);
+   if (Triangle(e1,e2,e3).getNormal()*nor < 0) CreateTriangle(e1, e3, e2);
+   else CreateTriangle(e1, e2, e3);
   }
  }
  else
@@ -1529,8 +1526,8 @@ int Basic_TMesh::loadSTL(const char *fname)
      e1=CreateEdge(v1, v2);
      e2=CreateEdge(v2, v3);
      e3=CreateEdge(v3, v1);
-     if (Triangle(e1,e2,e3).getNormal()*nor < 0) t=CreateTriangle(e1, e3, e2);
-     else t=CreateTriangle(e1, e2, e3);
+     if (Triangle(e1,e2,e3).getNormal()*nor < 0) CreateTriangle(e1, e3, e2);
+     else CreateTriangle(e1, e2, e3);
      v1=v2=v3=NULL;
     }
    }

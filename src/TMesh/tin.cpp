@@ -428,11 +428,10 @@ Edge *Basic_TMesh::bridgeBoundaries(Edge *gve, Edge *gwe)
 {
 	if (gve == gwe || !gve->isOnBoundary() || !gwe->isOnBoundary()) return NULL;
 
-	Triangle *t;
 	Vertex *v = gve->commonVertex(gwe);
 	if (v != NULL)
 	{
-		t = EulerEdgeTriangle(gve, gwe);
+		EulerEdgeTriangle(gve, gwe);
 		return gve;
 	}
 
@@ -445,8 +444,8 @@ Edge *Basic_TMesh::bridgeBoundaries(Edge *gve, Edge *gwe)
 	Edge *je2 = CreateEdge(gwn, gvn);
 	Edge *je1 = CreateEdge(gv, gwn);
 
-	t = CreateTriangle(je, gwe, je1);
-	t = CreateTriangle(je1, je2, gve);
+	CreateTriangle(je, gwe, je1);
+	CreateTriangle(je1, je2, gve);
 
 	return je1;
 }

@@ -514,7 +514,7 @@ int Basic_TMesh::fillSmallBoundaries(int nbe, bool refine_patches)
  Vertex *v,*w;
  Triangle *t;
  Node *n;
- int grd, is_selection=0, tbds = 0, pct = 100;
+ int grd, is_selection=0, pct = 100;
  List bdrs;
 
  TMesh::begin_progress();
@@ -535,7 +535,6 @@ int Basic_TMesh::fillSmallBoundaries(int nbe, bool refine_patches)
   grd = 0;
   if (!IS_BIT(v, 6) && v->isOnBoundary())
   {
-   tbds++;
    w = v;
    do
    {

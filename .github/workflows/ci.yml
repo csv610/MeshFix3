@@ -1,0 +1,37 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build --config Release -j$(nproc 2>/sys/name || sysctl -n hw.ncpu)
+
+    - name: Run C++ Unit Tests
+      run: ./bin/unit_tests
+
+    - name: Run CLI Integration Tests
+      run: python3 tests/test_cli.py
+
+    - name: Run Dataset Integration Tests
+      run: python3 tests/test_dataset.py

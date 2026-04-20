@@ -4,9 +4,9 @@ import shutil
 import unittest
 
 class TestMeshFixCLI(unittest.TestCase):
-    executable = os.path.abspath("./bin64/MeshFix") if os.path.exists("./bin64/MeshFix") else os.path.abspath("./bin/MeshFix")
+    executable = os.path.abspath("./bin/MeshFix")
     test_dir = os.path.abspath("tests/tmp")
-    sample_obj = os.path.abspath("bin64/MariaImmaculata_C_fixed.obj")
+    sample_obj = os.path.abspath("bin/MariaImmaculata_C_fixed.obj")
 
     @classmethod
     def setUpClass(cls):
@@ -53,7 +53,7 @@ class TestMeshFixCLI(unittest.TestCase):
 
     def test_default_output(self):
         """Test default output filename generation."""
-        # Copy sample to test dir to avoid cluttering bin64
+        # Copy sample to test dir to avoid cluttering bin
         test_sample = os.path.join(self.test_dir, "sample.obj")
         shutil.copy(self.sample_obj, test_sample)
         expected_output = os.path.join(self.test_dir, "sample_fixed.off")

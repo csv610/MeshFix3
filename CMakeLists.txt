@@ -54,11 +54,8 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     message(STATUS "64-bit compiler detected")
     target_compile_definitions(MeshFix PUBLIC IS64BITPLATFORM)
     target_compile_definitions(unit_tests PUBLIC IS64BITPLATFORM)
-    set(BIN_FOLDER "bin64")
-else()
-    message(STATUS "32-bit compiler detected")
-    set(BIN_FOLDER "bin")
 endif()
+set(BIN_FOLDER "bin")
 
 set_target_properties(MeshFix PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${BIN_FOLDER}"

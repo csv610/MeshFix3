@@ -99,7 +99,7 @@ cmake ..
 make
 ```
 
-The executable will be generated in the `bin64/` (or `bin/`) directory.
+The executable will be generated in the `bin/` directory.
 
 ---
 

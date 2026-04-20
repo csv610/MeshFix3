@@ -3,7 +3,7 @@ import subprocess
 import unittest
 
 class TestMeshFixDataset(unittest.TestCase):
-    executable = os.path.abspath("./bin64/MeshFix") if os.path.exists("./bin64/MeshFix") else os.path.abspath("./bin/MeshFix")
+    executable = os.path.abspath("./bin/MeshFix")
     dataset_dir = os.path.abspath("dataset")
     output_dir = os.path.abspath("tests/dataset_output")
 

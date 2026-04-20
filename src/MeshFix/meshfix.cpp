@@ -105,27 +105,33 @@ bool joinClosestComponents(Basic_TMesh *tin)
 }
 void usage()
 {
- printf("\nMeshFix V2.0 - by Marco Attene\n------\n");
+ printf("\nMeshFix3 \n------\n");
  printf("Usage: MeshFix inmeshfile [outmeshfile] [-a] [-j] [-x] [-o outmeshfile] [-h]\n");
  printf("  Processes 'inmeshfile' and saves the result to 'outmeshfile'\n");
- printf("  If 'outmeshfile' is not specified 'inmeshfile_fixed.off' will be produced\n");
+ printf("  If 'outmeshfile' is not specified '<input-dir>/<input-name>_fixed.off' will be produced\n");
  printf("  Option '-o' = specify output file\n");
  printf("  Option '-h' = display this help\n");
  printf("  Option '-a' = joins multiple open components before starting\n");
  printf("  Option '-j' = output files in STL format insted of OFF\n");
  printf("  Option '-x' exits if output file already exists.\n");
  printf("  Accepted input formats are OFF, PLY and STL.\n  Other formats are supported only partially.\n");
- printf("\nIf MeshFix is used for research purposes, please cite the following paper:\n");
- printf("\n   M. Attene.\n   A lightweight approach to repairing digitized polygon meshes.\n   The Visual Computer, 2010. (c) Springer.\n");
- printf("\nHIT ENTER TO EXIT.\n");
- getchar();
  exit(0);
 }
 
 std::string createFilename(const std::string& iname, const std::string& subext, const std::string& newextension)
 {
-    fs::path p(iname);
+    fs::path p = fs::absolute(fs::path(iname));
     return (p.parent_path() / (p.stem().string() + subext + newextension)).string();
+}
+
+void printRepairSummary(const RepairReport& report)
+{
+	printf("Repair summary:\n");
+	printf("  joined components: %d\n", report.joined_components);
+	printf("  removed components: %d\n", report.removed_components);
+	printf("  patched holes: %d\n", report.patched_holes);
+	printf("  exact degeneracies: %d -> %d\n", report.degeneracies_before, report.degeneracies_after);
+	printf("  intersecting triangles: %d -> %d\n", report.intersections_before, report.intersections_after);
 }
 
 
@@ -181,38 +187,76 @@ int main(int argc, char *argv[])
  if (stl_output) extension = ".stl";
  if (!output_specified) outfilename = createFilename(infilename, "_fixed", extension);
 
+ fs::path input_path(infilename);
+ fs::path output_path(outfilename);
+
  if (skip_if_fixed && fs::exists(outfilename)) TMesh::error("Output file already exists (-x option specified).");
+ if (!fs::exists(input_path)) TMesh::error("Input file does not exist.\n");
+ if (!fs::is_regular_file(input_path)) TMesh::error("Input path is not a regular file.\n");
+ if (output_path.has_parent_path() && !fs::exists(output_path.parent_path())) TMesh::error("Output directory does not exist.\n");
 
  // The loader automatically reconstructs a manifold triangle connectivity
  if (tin.load(infilename.c_str()) != 0) TMesh::error("Can't open file.\n");
+
+ RepairReport report;
 
  if (join_multiple_components)
  {
 	 TMesh::info("\nJoining input components ...\n");
 	 TMesh::begin_progress();
-	 while (joinClosestComponents(&tin)) TMesh::report_progress("Num. components: %d       ", tin.shells());
+	 while (joinClosestComponents(&tin))
+	 {
+		 report.joined_components++;
+		 TMesh::report_progress("Num. components: %d       ", tin.shells());
+	 }
 	 TMesh::end_progress();
 	 tin.deselectTriangles();
  }
 
-	   // Keep only the largest component (i.e. with most triangles)
-	   int sc = tin.removeSmallestComponents();
-	   if (sc) TMesh::warning("Removed %d small components\n",sc);
+ // Keep only the largest component (i.e. with most triangles)
+ report.removed_components = tin.removeSmallestComponents();
+ if (report.removed_components)
+ {
+	 TMesh::warning("Removed %d small components\n", report.removed_components);
+ }
 
-	   // Fill holes
-	   if (tin.boundaries())
-	   {
-		TMesh::warning("Patching holes\n");
-		tin.fillSmallBoundaries(0, true);
-	   }
+ // Fill holes
+ if (tin.boundaries())
+ {
+	TMesh::warning("Patching holes\n");
+	report.patched_holes = tin.fillSmallBoundaries(0, true);
+ }
 
-	   // Run geometry correction
-	   if (!tin.boundaries()) TMesh::warning("Fixing degeneracies and intersections...\n");
-	   if (tin.boundaries() || !tin.meshclean()) TMesh::warning("MeshFix could not fix everything.\n", sc);
+ const bool needs_meshclean = !tin.boundaries();
+ if (needs_meshclean)
+ {
+	report.degeneracies_before = tin.countExactDegeneracies();
+	report.intersections_before = tin.countSelfIntersectingTriangles();
+	report.degeneracies_after = report.degeneracies_before;
+	report.intersections_after = report.intersections_before;
+	if (report.degeneracies_before > 0 || report.intersections_before > 0)
+	{
+		TMesh::warning("Fixing degeneracies and intersections...\n");
+		if (!tin.meshclean()) TMesh::warning("MeshFix could not fix everything.\n", report.removed_components);
+		report.degeneracies_after = tin.countExactDegeneracies();
+		report.intersections_after = tin.countSelfIntersectingTriangles();
+	}
+ }
+ else TMesh::warning("MeshFix could not fix everything.\n", report.removed_components);
 
+ printRepairSummary(report);
+	
+ if (!report.repairedSomething())
+ {
+		 TMesh::info("No repair was applied. No output written.\n");
+	 if (CLOCKS_PER_SEC >= 1000)
+		 printf("Elapsed time: %lu ms\n", (clock() - beginning) / (CLOCKS_PER_SEC / 1000));
+	 return 0;
+ }
 
+	
  TMesh::info("Saving output mesh ...\n");
- tin.save(outfilename.c_str());
+ if (tin.save(outfilename.c_str()) != 0) TMesh::error("Failed to save output mesh.\n");
 
  // Normally, CLOCKS_PER_SEC >= 1000, but this is not technically guaranteed,
  // and if it were not true, dividing by zero would invoke undefined behavior.

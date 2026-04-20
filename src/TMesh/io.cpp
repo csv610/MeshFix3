@@ -29,14 +29,19 @@
 ****************************************************************************/
 
 #include "tmesh.h"
+#include <algorithm>
+#include <filesystem>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <vector>
 
 namespace T_MESH
 {
+namespace fs = std::filesystem;
 
 #define VRML1_HEADER 			"#VRML V1.0 ascii"
 #define VRML1_HSIZE			16
@@ -102,6 +107,28 @@ inline bool sameString(const char *a, const char *b)
 	}
 
 	return (a[i] == '\0' && b[i] == '\0');
+}
+
+inline std::string lowercaseExtension(const fs::path& path)
+{
+	std::string ext = path.extension().string();
+	std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char ch) {
+		return static_cast<char>(std::tolower(ch));
+	});
+	return ext;
+}
+
+inline bool parseOBJVertexIndex(const std::string& token, int *index)
+{
+	if (token.empty()) return false;
+	size_t end = token.find('/');
+	std::string vertex_token = token.substr(0, end);
+	if (vertex_token.empty()) return false;
+	char *tail = NULL;
+	long value = strtol(vertex_token.c_str(), &tail, 10);
+	if (tail == vertex_token.c_str() || *tail != '\0') return false;
+	*index = static_cast<int>(value);
+	return true;
 }
 
 
@@ -174,6 +201,7 @@ int Basic_TMesh::load(const char *fname, const bool doupdate)
  char header[256];
  size_t as;
  int err = IO_UNKNOWN;
+ std::string extension = lowercaseExtension(fs::path(fname));
 
  if ((fp = fopen(fname,"r")) == NULL) return IO_CANTOPEN;
  as = fread(header, 1, 256, fp);
@@ -185,9 +213,9 @@ int Basic_TMesh::load(const char *fname, const bool doupdate)
  else if (as >= EFF_HSIZE && !strncmp(header, EFF_HEADER, EFF_HSIZE)) err = loadEFF(fname);
  else if (as >= PLY_HSIZE && !strncmp(header, PLY_HEADER, PLY_HSIZE)) err = loadPLY(fname);
  else if (as >= IV_HSIZE && !strncmp(header, IV_HEADER, IV_HSIZE)) err = loadIV(fname);
- else if (sameString((char *)(fname+strlen(fname)-4), (char *)".obj")) err = loadOBJ(fname);
- else if (sameString((char *)(fname+strlen(fname)-4), (char *)".tri")) err = loadVerTri(fname);
- else if (sameString((char *)(fname+strlen(fname)-4), (char *)".stl")) err = loadSTL(fname);
+ else if (extension == ".obj") err = loadOBJ(fname);
+ else if (extension == ".tri") err = loadVerTri(fname);
+ else if (extension == ".stl") err = loadSTL(fname);
 
  if (!err && doupdate) eulerUpdate();
  if (!err) TMesh::setFilename(fname);
@@ -214,26 +242,28 @@ int Basic_TMesh::append(const char *filename, const bool doupdate)
 
 int Basic_TMesh::save(const char *fname, bool back_approx)
 {
- char nfname[4096];
- strcpy(nfname, fname);
-
+ fs::path path(fname);
+ if (!path.has_extension()) path += ".wrl";
+ std::string extension = lowercaseExtension(path);
+ std::string target = path.string();
  int rv;
- size_t i=strlen(fname)-1;
- while (i>0 && fname[i] != '.') i--;
-
- if (i==0) {strcat(nfname,".wrl"); i=strlen(fname);}
-
- if (sameString(nfname+i, ".wrl")) rv = saveVRML1(nfname);
- else if (sameString(nfname+i, ".iv")) rv = saveIV(nfname);
- else if (sameString(nfname + i, ".off")) rv = saveOFF(nfname);
- else if (sameString(nfname + i, ".eff")) rv = saveEFF(nfname);
- else if (sameString(nfname + i, ".ply")) rv = savePLY(nfname);
- else if (sameString(nfname+i, ".obj")) rv = saveOBJ(nfname);
- else if (sameString(nfname+i, ".stl")) rv = saveSTL(nfname);
- else if (sameString(nfname+i, ".tri")) {nfname[i]='\0'; rv = saveVerTri(nfname);}
+ if (extension == ".wrl") rv = saveVRML1(target.c_str());
+ else if (extension == ".iv") rv = saveIV(target.c_str());
+ else if (extension == ".off") rv = saveOFF(target.c_str());
+ else if (extension == ".eff") rv = saveEFF(target.c_str());
+ else if (extension == ".ply") rv = savePLY(target.c_str());
+ else if (extension == ".obj") rv = saveOBJ(target.c_str());
+ else if (extension == ".stl") rv = saveSTL(target.c_str());
+ else if (extension == ".tri")
+ {
+  std::string base = path;
+  path.replace_extension();
+  base = path.string();
+  rv = saveVerTri(base.c_str());
+ }
  else
  {
-  TMesh::warning("Unknown extension '%s'.\n",nfname+i);
+  TMesh::warning("Unknown extension '%s'.\n",extension.c_str());
   TMesh::warning("I did not save anything.\n");
   TMesh::warning("Recognized extensions are:");
   TMesh::warning(".wrl (ASCII VRML 1.0)\n");
@@ -578,25 +608,23 @@ int Basic_TMesh::loadVerTri(const char *fname)
  FILE *fpv, *fpt;
  int numvers, numtris, i, i1, i2, i3, a1, a2, a3;
  float x,y,z;
- char vername[256], triname[256];
  Node *n;
  Vertex *v;
+ fs::path tripath(fname);
+ fs::path verpath = tripath;
 
- if (!sameString((char *)(fname+strlen(fname)-4), (char *)".tri")) return IO_UNKNOWN;
+ if (lowercaseExtension(tripath) != ".tri") return IO_UNKNOWN;
+ verpath.replace_extension(".ver");
 
- strcpy(triname,fname);
- strcpy(vername,fname); vername[strlen(vername)-4]='\0';
- strcat(vername,".ver");
-
- if ((fpv = fopen(vername,"r")) == NULL)
+ if ((fpv = fopen(verpath.string().c_str(),"r")) == NULL)
  {
-  fprintf(stderr,"Can't open '%s' for input !\n",vername);
+  fprintf(stderr,"Can't open '%s' for input !\n",verpath.string().c_str());
   return 1;
  }
- if ((fpt = fopen(triname,"r")) == NULL)
+ if ((fpt = fopen(tripath.string().c_str(),"r")) == NULL)
  {
   fclose(fpv);
-  fprintf(stderr,"Can't open '%s' for input !\n",triname);
+  fprintf(stderr,"Can't open '%s' for input !\n",tripath.string().c_str());
   return 1;
  }
 
@@ -1350,10 +1378,10 @@ int Basic_TMesh::loadOBJ(const char *fname)
 {
  FILE *fp;
  Node *n;
- char c, cmd[3] = "";
+ char cmd[3] = "";
  float x,y,z;
  bool face_section = 0;
- int i=0,i1,i2,i3,nv=0,triangulate=0;
+ int i=0,nv=0,triangulate=0;
  Vertex *v;
  ExtVertex **var=NULL;
 
@@ -1377,29 +1405,40 @@ int Basic_TMesh::loadOBJ(const char *fname)
     i=0; FOREACHVERTEX(v, n) var[i++] = new ExtVertex(v);
     face_section = 1;
     i=0;
+  }
+
+   char *line = readLineFromFile(fp);
+   std::istringstream face_stream(line);
+   std::string token;
+   std::vector<int> indices;
+
+   while (face_stream >> token)
+   {
+    if (!token.empty() && token[0] == '#') break;
+    int index = 0;
+    if (!parseOBJVertexIndex(token, &index)) TMesh::error("\nloadOBJ: Couldn't read indexes for face # %d\n",i);
+    indices.push_back(index);
    }
 
-   if (fscanf(fp,"%d %d %d",&i1,&i2,&i3) == 3)
+   if (indices.size() < 3) TMesh::error("\nloadOBJ: Couldn't read indexes for face # %d\n",i);
+   if ((i%1000) == 0) TMesh::report_progress("Loading ..%d%%",(i*100)/(nv*2));
+
+   for (size_t j = 0; j < indices.size(); j++)
    {
-    if ((i%1000) == 0) TMesh::report_progress("Loading ..%d%%",(i*100)/(nv*2));
-    if (i1<0 || i2<0 || i3<0) TMesh::error("\nloadOBJ: Sorry. Negative vertex references not supported.\n");
-    if (i1<1 || i2<1 || i3<1 || i1>nv || i2>nv || i3>nv) TMesh::error("\nloadOBJ: Invalid index at face %d!\n",i);
-    do
-    {
-     if (i1 == i2 || i2 == i3 || i3 == i1) TMesh::warning("\nloadOBJ: Coincident indexes at triangle %d! Skipping.\n",i);
-     else if (!CreateIndexedTriangle(var, i1-1, i2-1, i3-1)) TMesh::warning("\nloadOBJ: This shouldn't happen!!! Skipping triangle.\n");
-     i2 = i3;
-     while ((c=fgetc(fp)) != EOF && isspace(c) && c != '\n' && c != '\r');
-     if (c==EOF) TMesh::error("\nloadOBJ: Unexpected end of file!\n");
-     if (c != '\n' && c != '\r')
-     {
-      ungetc(c, fp);
-      if (fscanf(fp,"%d",&i3) != 1) TMesh::error("\nloadOBJ: Couldn't read indexes for face # %d\n",i);
-      else triangulate=1;
-     }
-    } while (c != '\n' && c != '\r');
+    if (indices[j] < 0) TMesh::error("\nloadOBJ: Sorry. Negative vertex references not supported.\n");
+    if (indices[j] < 1 || indices[j] > nv) TMesh::error("\nloadOBJ: Invalid index at face %d!\n",i);
    }
-   else TMesh::error("\nloadOBJ: Couldn't read indexes for face # %d\n",i);
+
+   int i1 = indices[0];
+   int i2 = indices[1];
+   for (size_t j = 2; j < indices.size(); j++)
+   {
+    int i3 = indices[j];
+    if (i1 == i2 || i2 == i3 || i3 == i1) TMesh::warning("\nloadOBJ: Coincident indexes at triangle %d! Skipping.\n",i);
+    else if (!CreateIndexedTriangle(var, i1-1, i2-1, i3-1)) TMesh::warning("\nloadOBJ: This shouldn't happen!!! Skipping triangle.\n");
+    i2 = i3;
+   }
+   if (indices.size() > 3) triangulate=1;
    i++;
   }
   else if (readLineFromFile(fp, 0) == NULL) break;

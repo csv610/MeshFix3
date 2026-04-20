@@ -36,6 +36,26 @@
 namespace T_MESH
 {
 
+struct RepairReport
+{
+	int joined_components = 0;
+	int removed_components = 0;
+	int patched_holes = 0;
+	int degeneracies_before = 0;
+	int degeneracies_after = 0;
+	int intersections_before = 0;
+	int intersections_after = 0;
+
+	bool repairedSomething() const
+	{
+		return joined_components > 0 ||
+			removed_components > 0 ||
+			patched_holes > 0 ||
+			degeneracies_after < degeneracies_before ||
+			intersections_after < intersections_before;
+	}
+};
+
 //! Basic_TMesh
 
 //! This class represents a manifold and oriented triangle mesh.
@@ -652,10 +672,13 @@ class Basic_TMesh
 		//! If, for any reason, some degeneracies cannot be removed
 		//! a warning is issued and the degenerate triangles that could not
 		//! be resolved are selected.
-		//! The absolute value of the integer returned is the number of 
-		//! collapses performed; the return value is negative if some 
-		//! degenerate triangles could not be resolved.
-		int removeDegenerateTriangles();
+			//! The absolute value of the integer returned is the number of 
+			//! collapses performed; the return value is negative if some 
+			//! degenerate triangles could not be resolved.
+			int removeDegenerateTriangles();
+
+			//! Counts the exact zero-area triangles currently present in the mesh.
+			int countExactDegeneracies() const;
 
 		//! Calls 'removeDegenerateTriangles()' and, if some degeneracies remain,
 		//! removes them and fills the resulting holes. Then tries again and, if
@@ -690,9 +713,12 @@ class Basic_TMesh
 		//! determines the depth of the recursive space subdivision used to keep
 		//! the complexity under a resonable threchold. The default value is safe
 		//! in most cases.
-		//! if 'justproper' is true, coincident edges and vertices are not regarded
-		//! as intersections even if they are not common subsimplexes.
-		int selectIntersectingTriangles(UINT16 tris_per_cell = 50, bool justproper = false);
+			//! if 'justproper' is true, coincident edges and vertices are not regarded
+			//! as intersections even if they are not common subsimplexes.
+			int selectIntersectingTriangles(UINT16 tris_per_cell = 50, bool justproper = false);
+
+			//! Counts the currently intersecting triangles and clears the selection afterwards.
+			int countSelfIntersectingTriangles(UINT16 tris_per_cell = 50, bool justproper = false);
 
 
 		//! This is as coordBackApproximation() but it also checks for
@@ -800,4 +826,3 @@ class Basic_TMesh
 } //namespace T_MESH
 
 #endif //_TIN_H
-

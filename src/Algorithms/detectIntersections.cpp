@@ -392,4 +392,11 @@ bool Basic_TMesh::strongIntersectionRemoval(int max_iters)
  return true;
 }
 
+int Basic_TMesh::countSelfIntersectingTriangles(UINT16 tris_per_cell, bool justproper)
+{
+	const int count = selectIntersectingTriangles(tris_per_cell, justproper);
+	deselectTriangles();
+	return count;
+}
+
 } //namespace T_MESH

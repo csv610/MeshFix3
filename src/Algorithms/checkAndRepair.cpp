@@ -520,6 +520,17 @@ int Basic_TMesh::removeDegenerateTriangles()
 	return (nc)*((degn) ? (-1) : (1));
 }
 
+int Basic_TMesh::countExactDegeneracies() const
+{
+	Node *n;
+	Triangle *t;
+	int count = 0;
+
+	FOREACHTRIANGLE(t, n) if (t->isExactlyDegenerate()) count++;
+
+	return count;
+}
+
 //int Basic_TMesh::removeDegenerateTriangles()
 //{
 //	Node *n;

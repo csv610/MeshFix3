@@ -10,7 +10,7 @@ def run_command(cmd):
 
 def benchmark():
     # Configuration
-    scales = [1, 2, 3, 4, 5] # Octahedron subdivision levels
+    scales = [1, 2, 3, 4, 5, 6, 7, 8] # Octahedron subdivision levels
     executable = os.path.abspath("./bin/MeshFix")
     results_file = "bench/scalability_results.csv"
     
@@ -21,10 +21,12 @@ def benchmark():
 
     for s in scales:
         # 1. Generate
+        print("Creating clean Geometry")
         clean_mesh = f"bench/clean_{s}.off"
         run_command(["python3", "bench/generate_mesh.py", str(s), clean_mesh])
         
         # 2. Corrupt
+        print("Corrupting Geometry")
         corrupt_mesh = f"bench/corrupt_{s}.off"
         run_command(["python3", "bench/corrupt_mesh.py", clean_mesh, corrupt_mesh])
         
@@ -35,6 +37,7 @@ def benchmark():
             nv, nt = header[0], header[1]
 
         # 3. Benchmark MeshFix
+        print("Fixing Geometry")
         fixed_mesh = f"bench/fixed_{s}.off"
         start_time = time.time()
         res = run_command([executable, corrupt_mesh, "-o", fixed_mesh])

@@ -6,3 +6,6 @@ bin64/
 meshfix.log
 tests/tmp/
 .DS_Store
+bench/corrupt_mesh
+bench/generate_mesh
+bench/*.off

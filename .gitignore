@@ -1,0 +1,8 @@
+build/
+bin/
+bin64/
+*.o
+*.d
+meshfix.log
+tests/tmp/
+.DS_Store

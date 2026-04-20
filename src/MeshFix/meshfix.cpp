@@ -100,13 +100,14 @@ bool joinClosestComponents(Basic_TMesh *tin)
 
 	return (gv != NULL);
 }
-
 void usage()
 {
  printf("\nMeshFix V2.0 - by Marco Attene\n------\n");
- printf("Usage: MeshFix inmeshfile [outmeshfile] [-a] [-j] [-x]\n");
+ printf("Usage: MeshFix inmeshfile [outmeshfile] [-a] [-j] [-x] [-o outmeshfile] [-h]\n");
  printf("  Processes 'inmeshfile' and saves the result to 'outmeshfile'\n");
  printf("  If 'outmeshfile' is not specified 'inmeshfile_fixed.off' will be produced\n");
+ printf("  Option '-o' = specify output file\n");
+ printf("  Option '-h' = display this help\n");
  printf("  Option '-a' = joins multiple open components before starting\n");
  printf("  Option '-j' = output files in STL format insted of OFF\n");
  printf("  Option '-x' exits if output file already exists.\n");
@@ -123,7 +124,7 @@ char *createFilename(const char *iname, const char *subext, char *oname, const c
 	static char tname[2048];
 	strcpy(tname, iname);
 	for (int n = strlen(tname) - 1; n>0; n--) if (tname[n] == '.') { tname[n] = '\0'; break; }
-	sprintf(oname, "%s%s%s", tname, subext, newextension);
+	snprintf(oname, 2048, "%s%s%s", tname, subext, newextension);
 	return oname;
 }
 
@@ -146,29 +147,38 @@ int main(int argc, char *argv[])
  bool stl_output = false;
  bool skip_if_fixed = false;
  bool join_multiple_components = false;
- char infilename[2048], outfilename[2048], extension[] = ".off";
+ char infilename[2048] = {0}, outfilename[2048] = {0}, extension[] = ".off";
+ bool output_specified = false;
 
- if (argc < 2) usage();
-
- float par;
- int i = 2;
- if (argc > 2 && argv[2][0] == '-') i--;
-
- for (; i<argc; i++)
+ for (int i = 1; i < argc; i++)
  {
-  if (i<argc-1) par = (float)atof(argv[i+1]); else par = 0;
-  if (!strcmp(argv[i], "-x")) skip_if_fixed = true;
-  else if (!strcmp(argv[i], "-a")) join_multiple_components = true;
-  else if (!strcmp(argv[i], "-j")) stl_output = true;
-  else if (argv[i][0] == '-') TMesh::warning("%s - Unknown operation.\n", argv[i]);
-
-  if (par) i++;
+  std::string_view arg = argv[i];
+  if (arg == "-h") usage();
+  else if (arg == "-x") skip_if_fixed = true;
+  else if (arg == "-a") join_multiple_components = true;
+  else if (arg == "-j") stl_output = true;
+  else if (arg == "-o")
+  {
+   if (i + 1 < argc) {
+    strncpy(outfilename, argv[++i], sizeof(outfilename));
+    output_specified = true;
+   }
+   else TMesh::error("-o option requires an argument.\n");
+  }
+  else if (arg.starts_with('-')) TMesh::warning("%s - Unknown operation.\n", argv[i]);
+  else {
+   if (infilename[0] == '\0') strncpy(infilename, argv[i], sizeof(infilename));
+   else if (!output_specified) {
+    strncpy(outfilename, argv[i], sizeof(outfilename));
+    output_specified = true;
+   }
+  }
  }
 
- sprintf(infilename, "%s", argv[1]);
+ if (infilename[0] == '\0') usage();
+
  if (stl_output) strcpy(extension, ".stl");
- if (argc>2 && argv[2][0] != '-') sprintf(outfilename, "%s", argv[2]);
- else createFilename(infilename, "_fixed", outfilename, extension);
+ if (!output_specified) createFilename(infilename, "_fixed", outfilename, extension);
 
  if (skip_if_fixed && fopen(outfilename, "r")) TMesh::error("Output file already exists (-x option specified).");
 
@@ -206,7 +216,7 @@ int main(int argc, char *argv[])
  // Normally, CLOCKS_PER_SEC >= 1000, but this is not technically guaranteed,
  // and if it were not true, dividing by zero would invoke undefined behavior.
  if (CLOCKS_PER_SEC >= 1000)
-	 printf("Elapsed time: %d ms\n", (clock() - beginning) / (CLOCKS_PER_SEC / 1000));
+	 printf("Elapsed time: %lu ms\n", (clock() - beginning) / (CLOCKS_PER_SEC / 1000));
 
  return 0;
 }

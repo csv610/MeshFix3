@@ -36,6 +36,8 @@
 #include <time.h>
 #include <limits.h>
 #include <float.h>
+#include <span>
+#include <string_view>
 #include "coordinates.h"
 
 namespace T_MESH
@@ -109,12 +111,10 @@ class TMesh
 #define DISPMSG_ACTION_PUTMESSAGE	4
 #define DISPMSG_ACTION_ERRORDIALOG	5
 
-#ifndef _INC_WINDOWS
 typedef unsigned char	UBYTE;
 typedef   signed char	 BYTE;
 typedef unsigned short UINT16;
 typedef   signed short	INT16;
-#endif
 
 #ifdef IS64BITPLATFORM
 typedef long int j_voidint;

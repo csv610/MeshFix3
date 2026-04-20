@@ -51,14 +51,9 @@ SOURCE CODE
 ---------------------
 
 From version 2.0 MeshFix is self-contained, that is, it does not depend on any other software.
-To compile the source code on Windows you need Microsoft Visual C++ 2013 or newer.
-Just click on vc12/MeshFix_All.sln and hit F7.
-The executable will be saved in bin/.
-
-Both 32bit and 64bit versions can be produced.
-
 The source code is standard ANSI C++ and should be portable.
-To compile on other configurations you may use CMake (thanks to Jeremie Dumas for having created the CMakeLists!).
+To compile the source code you should use CMake (thanks to Jeremie Dumas for having created the CMakeLists!).
+The executable will be saved in bin64/ (or bin/).
 
 
 ---------

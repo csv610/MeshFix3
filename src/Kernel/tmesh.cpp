@@ -73,7 +73,7 @@ void TMesh::error(const char *msg, ...)
  va_start(ap, msg);
  strcpy(fmt,"\nERROR- ");
  strcat(fmt,msg);
- vsprintf(fms,fmt,ap);
+ vsnprintf(fms, sizeof(fms), fmt, ap);
 
  if (display_message != NULL)
   display_message(fms, DISPMSG_ACTION_ERRORDIALOG);
@@ -94,7 +94,7 @@ void TMesh::warning(const char *msg, ...)
  va_start(ap, msg);
  strcpy(fmt,"WARNING- ");
  strcat(fmt,msg);
- vsprintf(fms,fmt,ap);
+ vsnprintf(fms, sizeof(fms), fmt, ap);
 
  if (display_message != NULL)
   display_message(fms, DISPMSG_ACTION_PUTMESSAGE);
@@ -114,7 +114,7 @@ void TMesh::info(const char *msg, ...)
  va_start(ap, msg);
  strcpy(fmt,"INFO- ");
  strcat(fmt,msg);
- vsprintf(fms,fmt,ap);
+ vsnprintf(fms, sizeof(fms), fmt, ap);
 
  if (display_message != NULL)
   display_message(fms, DISPMSG_ACTION_PUTMESSAGE);
@@ -145,7 +145,7 @@ void TMesh::report_progress(const char *msg, ...)
 
  if (msg == NULL)
  {
-  sprintf(fms,"%c",rotating_bar[wc++]); if (wc==4) wc=0;
+  snprintf(fms, sizeof(fms), "%c", rotating_bar[wc++]); if (wc==4) wc=0;
   strcpy(fmt+1,fms);
 
   if (display_message != NULL)
@@ -161,7 +161,7 @@ void TMesh::report_progress(const char *msg, ...)
   va_list ap;
   va_start(ap, msg);
   strcpy(fmt+1,msg);
-  vsprintf(fms,fmt,ap);
+  vsnprintf(fms, sizeof(fms), fmt, ap);
 
   if (display_message != NULL)
    display_message(fms, DISPMSG_ACTION_PUTPROGRESS);
@@ -237,7 +237,7 @@ char *currentDateTime()
 void TMesh::logToFileAndExit(const char *s)
 {
 	static char msg[2048];
-	sprintf(msg, "%s\nFILE: %s\nRETURN VALUE: %s\n\n", currentDateTime(), (filename) ? (filename) : ("unknown"), s);
+	snprintf(msg, sizeof(msg), "%s\nFILE: %s\nRETURN VALUE: %s\n\n", currentDateTime(), (filename) ? (filename) : ("unknown"), s);
 	addMessageToLogFile(msg);
 	TMesh::error(msg);
 }
@@ -253,7 +253,7 @@ void TMesh::printElapsedTime(bool reset)
 {
 	static clock_t beginning_time;
 	if (reset) beginning_time = clock();
-	else printf("\n\n********** PARTIAL ELAPSED: %d msecs\n\n", (clock() - beginning_time));
+	else printf("\n\n********** PARTIAL ELAPSED: %lu msecs\n\n", (clock() - beginning_time));
 }
 
 } //namespace T_MESH

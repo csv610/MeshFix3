@@ -31,14 +31,23 @@
 #ifndef _POINT_H
 #define _POINT_H
 
+#include <compare>
 #include "basics.h"
 
 namespace T_MESH
 {
 
 //! Orientation predicates using filtering on doubles
-extern "C" double orient2d(double *, double *, double *);
-extern "C" double orient3d(double *, double *, double *, double *);
+extern "C" double orient2d(const double *pa, const double *pb, const double *pc);
+extern "C" double orient3d(const double *pa, const double *pb, const double *pc, const double *pd);
+
+inline double orient2d_span(std::span<const double, 2> pa, std::span<const double, 2> pb, std::span<const double, 2> pc) {
+    return orient2d(pa.data(), pb.data(), pc.data());
+}
+
+inline double orient3d_span(std::span<const double, 3> pa, std::span<const double, 3> pb, std::span<const double, 3> pc, std::span<const double, 3> pd) {
+    return orient3d(pa.data(), pb.data(), pc.data(), pd.data());
+}
 
 //! Orientation predicates on PM_Rationals
 
@@ -82,6 +91,8 @@ class Point
 
  //! Creates a new point with the same coordinates as 's'. The info field is not copied.
  Point(const Point& s) {x = s.x; y = s.y; z = s.z; info = NULL;}
+
+  Point& operator=(const Point& s) { x = s.x; y = s.y; z = s.z; info = NULL; return *this; }
 
  //! Creates a new point with coordinates (a,b,c).
  Point(const coord& a, const coord& b, const coord& c) {x = a; y = b; z = c; info = NULL;}
@@ -129,13 +140,10 @@ class Point
  Point 	operator/(const coord& d) const { return Point(x / d, y / d, z / d); }
 
  //! TRUE iff coordinates are equal
- bool  	operator==(const Point& p) const {return (x==p.x && y==p.y && z==p.z);}
-
- //! FALSE iff coordinates are equal
- bool  	operator!=(const Point& p) const {return (x!=p.x || y!=p.y || z!=p.z);}
+ bool  	operator==(const Point& p) const = default;
 
  //! TRUE iff this is lexycographically smaller than s
- bool operator<(const Point& s) const;
+ std::partial_ordering operator<=>(const Point& s) const = default;
 
  //! Returns the i'th coordinate
  inline coord& at(unsigned char i) { return (i == 0) ? (x) : ((i == 1) ? (y) : (z)); }

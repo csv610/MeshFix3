@@ -34,8 +34,6 @@
 namespace T_MESH
 {
 
-extern "C" double orient2d(double *, double *, double *);
-
 //////////////////// Constructor //////////////////////
 
 //!< AMF_ADD 1.1>

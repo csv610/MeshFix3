@@ -226,27 +226,13 @@ bool Point::pointInInnerTriangle(const Point *p, const Point *v1, const Point *v
 
 //////// Lexicographic Point comparison //////////
 
-// This can be used with std::sort()
-bool Point::operator<(const Point& s) const
-{
- if (x<s.x) return true; else if (x>s.x) return false;
- if (y<s.y) return true; else if (y>s.y) return false;
- if (z<s.z) return true; else return false;
-}
-
 // This can be used with jqsort
 int xyzCompare(const void *a, const void *b)
 {
- coord c;
-
- if ((c=(((Point *)a)->x - ((Point *)b)->x)) < 0) return -1;
- if (c > 0) return 1;
- if ((c=(((Point *)a)->y - ((Point *)b)->y)) < 0) return -1;
- if (c > 0) return 1;
- if ((c=(((Point *)a)->z - ((Point *)b)->z)) < 0) return -1;
- if (c > 0) return 1;
-
- return 0;
+    auto cmp = (*(const Point *)a) <=> (*(const Point *)b);
+    if (cmp < 0) return -1;
+    if (cmp > 0) return 1;
+    return 0;
 }
 
 //////////////// Normalization /////////////////////////

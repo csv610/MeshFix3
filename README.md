@@ -71,6 +71,21 @@ To test MeshFix on these examples, you can run:
 python3 tests/test_dataset.py
 ```
 
+---
+
+## Benchmarking & Scalability
+
+The `bench/` directory contains tools to generate large-scale datasets and analyze the performance of MeshFix:
+
+1.  **`generate_mesh.py`**: Creates spherical meshes with customizable resolution via subdivision.
+2.  **`corrupt_mesh.py`**: Systematically introduces all errors handled by MeshFix (holes, flipped normals, degeneracies, noise, singularities, and intersections).
+3.  **`benchmark.py`**: Automates the full pipeline across multiple scales and saves results to `scalability_results.csv`.
+
+**Run the benchmark:**
+```bash
+python3 bench/benchmark.py
+```
+
 ## Supported Formats
 
 MeshFix supports a wide range of industry-standard 3D formats for both input and output:

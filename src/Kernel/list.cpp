@@ -280,20 +280,31 @@ void **List::toArray() const
  return array;
 }
 
+std::vector<void*> List::toVector() const
+{
+    std::vector<void*> vec;
+    vec.reserve(l_numels);
+    for (Node* n = l_head; n != nullptr; n = n->next()) {
+        vec.push_back(n->data);
+    }
+    return vec;
+}
+
 ///// Sorts the list /////////
 
 int List::sort(int (*comp)(const void *, const void *))
 {
- void **array;
- int ne = l_numels-1;
-
  if (l_numels < 2) return 0;
- if ((array = toArray()) == NULL) return 1;
-
- jqsort(array, l_numels, comp);
+ 
+ std::vector<void*> vec = toVector();
+ std::sort(vec.begin(), vec.end(), [comp](void* a, void* b) {
+     return comp(&a, &b) < 0;
+ });
+ 
  removeNodes();
- for (; ne >= 0; ne--) appendHead(array[ne]);
- free(array);
+ for (auto it = vec.rbegin(); it != vec.rend(); ++it) {
+     appendHead(*it);
+ }
 
  return 0;
 }

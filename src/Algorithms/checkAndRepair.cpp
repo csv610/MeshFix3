@@ -779,77 +779,67 @@ bool Basic_TMesh::strongDegeneracyRemoval(int max_iters)
 
 int Basic_TMesh::removeSmallestComponents()
 {
- Node *n,*m;
- List todo;
- List components;
- List *component, *biggest = NULL;
+ Node *n;
+ std::vector<Triangle*> todo;
+ std::vector<std::vector<Triangle*>> components;
+ std::vector<Triangle*>* biggest = nullptr;
  Triangle *t, *t1, *t2, *t3;
- int nt = 0, gnt = 0;
+ size_t nt = 0, gnt = 0;
 
  if (T.numels() == 0) return 0;
 
  FOREACHTRIANGLE(t, n) UNMARK_BIT(t, 5);
 
- t = ((Triangle *)T.head()->data);
  n = T.head();
- do
+ while (n != nullptr)
  {
-  component = new List;
-  components.appendHead(component);
-  todo.appendHead(t);
-  while (todo.numels())
+  t = (Triangle*)n->data;
+  if (!IS_BIT(t, 5))
   {
-   t = (Triangle *)todo.head()->data;
-   todo.removeCell(todo.head());
-   if (!IS_BIT(t, 5))
-   {
-    t1 = t->t1();
-    t2 = t->t2();
-    t3 = t->t3();
+      std::vector<Triangle*> component;
+      todo.push_back(t);
+      MARK_BIT(t, 5);
+      
+      while (!todo.empty())
+      {
+       t = todo.back();
+       todo.pop_back();
+       component.push_back(t);
 
-	if (t1 != NULL && !IS_BIT(t1, 5)) todo.appendHead(t1);
-	if (t2 != NULL && !IS_BIT(t2, 5)) todo.appendHead(t2);
-	if (t3 != NULL && !IS_BIT(t3, 5)) todo.appendHead(t3);
-
-	MARK_BIT(t, 5);
-    component->appendTail(t);
-   }
+       t1 = t->t1(); t2 = t->t2(); t3 = t->t3();
+       if (t1 != nullptr && !IS_BIT(t1, 5)) { MARK_BIT(t1, 5); todo.push_back(t1); }
+       if (t2 != nullptr && !IS_BIT(t2, 5)) { MARK_BIT(t2, 5); todo.push_back(t2); }
+       if (t3 != nullptr && !IS_BIT(t3, 5)) { MARK_BIT(t3, 5); todo.push_back(t3); }
+      }
+      components.push_back(std::move(component));
   }
-  todo.removeNodes();
-  for (; n != NULL; n=n->next()) {t = ((Triangle *)n->data); if (!IS_BIT(t, 5)) break;}
+  n = n->next();
  }
- while (n != NULL);
 
- int num_comps = components.numels();
-
- FOREACHNODE(components, n)
-  if ((nt = ((List *)n->data)->numels()) > gnt) {gnt=nt; biggest = (List *)n->data;}
+ for (auto& comp : components) {
+     if (comp.size() > gnt) {
+         gnt = comp.size();
+         biggest = &comp;
+     }
+ }
 
  FOREACHTRIANGLE(t, n) UNMARK_BIT(t, 5);
 
  nt = 0;
- FOREACHNODE(components, n)
-  if (((List *)n->data) != biggest)
-   FOREACHVTTRIANGLE(((List *)n->data), t, m)
-   {
-    if (t->e1->v1 != NULL) t->e1->v1->e0 = NULL;
-    if (t->e1->v2 != NULL) t->e1->v2->e0 = NULL;
-    if (t->e2->v1 != NULL) t->e2->v1->e0 = NULL;
-    if (t->e2->v2 != NULL) t->e2->v2->e0 = NULL;
-    if (t->e3->v1 != NULL) t->e3->v1->e0 = NULL;
-    if (t->e3->v2 != NULL) t->e3->v2->e0 = NULL;
-    t->e1->v1 = t->e1->v2 = t->e2->v1 = t->e2->v2 = t->e3->v1 = t->e3->v2 = NULL;
-    t->e1 = t->e2 = t->e3 = NULL;
-    nt++;
-   }
-
- FOREACHNODE(components, n) delete((List *)n->data);
+ for (auto& comp : components) {
+     if (&comp != biggest) {
+         for (auto* tri : comp) {
+            unlinkTriangle(tri);
+            nt++;
+         }
+     }
+ }
 
  if (nt)
  {
   d_boundaries = d_handles = d_shells = 1;
   removeUnlinkedElements();
-  return num_comps-1;
+  return (int)components.size() - 1;
  }
 
  return 0;

@@ -32,6 +32,9 @@
 #define _JLIST_H
 
 #include <stdio.h>
+#include <list>
+#include <vector>
+#include <algorithm>
 
 namespace T_MESH
 {
@@ -159,6 +162,7 @@ class List
  void removeNodes();		//!< Deletes and removes all the nodes. \n O(numels()).
 
  void **toArray() const;		//!< Creates an array out of the list. \n O(numels()).
+ std::vector<void*> toVector() const; //!< Creates a vector out of the list. \n O(numels()).
 
  //! Sorts the list using 'comp' as comparison function for two elements. \n O(numels()^2).
 

@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <filesystem>
+#include <string>
+#include <string_view>
 
+namespace fs = std::filesystem;
 using namespace T_MESH;
 
 double closestPair(List *bl1, List *bl2, Vertex **closest_on_bl1, Vertex **closest_on_bl2)
@@ -119,13 +123,10 @@ void usage()
  exit(0);
 }
 
-char *createFilename(const char *iname, const char *subext, char *oname, const char *newextension)
+std::string createFilename(const std::string& iname, const std::string& subext, const std::string& newextension)
 {
-	static char tname[2048];
-	strcpy(tname, iname);
-	for (int n = strlen(tname) - 1; n>0; n--) if (tname[n] == '.') { tname[n] = '\0'; break; }
-	snprintf(oname, 2048, "%s%s%s", tname, subext, newextension);
-	return oname;
+    fs::path p(iname);
+    return (p.parent_path() / (p.stem().string() + subext + newextension)).string();
 }
 
 
@@ -147,7 +148,8 @@ int main(int argc, char *argv[])
  bool stl_output = false;
  bool skip_if_fixed = false;
  bool join_multiple_components = false;
- char infilename[2048] = {0}, outfilename[2048] = {0}, extension[] = ".off";
+ std::string infilename, outfilename;
+ std::string extension = ".off";
  bool output_specified = false;
 
  for (int i = 1; i < argc; i++)
@@ -160,30 +162,30 @@ int main(int argc, char *argv[])
   else if (arg == "-o")
   {
    if (i + 1 < argc) {
-    strncpy(outfilename, argv[++i], sizeof(outfilename));
+    outfilename = argv[++i];
     output_specified = true;
    }
    else TMesh::error("-o option requires an argument.\n");
   }
   else if (arg.starts_with('-')) TMesh::warning("%s - Unknown operation.\n", argv[i]);
   else {
-   if (infilename[0] == '\0') strncpy(infilename, argv[i], sizeof(infilename));
+   if (infilename.empty()) infilename = argv[i];
    else if (!output_specified) {
-    strncpy(outfilename, argv[i], sizeof(outfilename));
+    outfilename = argv[i];
     output_specified = true;
    }
   }
  }
 
- if (infilename[0] == '\0') usage();
+ if (infilename.empty()) usage();
 
- if (stl_output) strcpy(extension, ".stl");
- if (!output_specified) createFilename(infilename, "_fixed", outfilename, extension);
+ if (stl_output) extension = ".stl";
+ if (!output_specified) outfilename = createFilename(infilename, "_fixed", extension);
 
- if (skip_if_fixed && fopen(outfilename, "r")) TMesh::error("Output file already exists (-x option specified).");
+ if (skip_if_fixed && fs::exists(outfilename)) TMesh::error("Output file already exists (-x option specified).");
 
  // The loader automatically reconstructs a manifold triangle connectivity
- if (tin.load(infilename) != 0) TMesh::error("Can't open file.\n");
+ if (tin.load(infilename.c_str()) != 0) TMesh::error("Can't open file.\n");
 
  if (join_multiple_components)
  {
@@ -211,7 +213,7 @@ int main(int argc, char *argv[])
 
 
  TMesh::info("Saving output mesh ...\n");
- tin.save(outfilename);
+ tin.save(outfilename.c_str());
 
  // Normally, CLOCKS_PER_SEC >= 1000, but this is not technically guaranteed,
  // and if it were not true, dividing by zero would invoke undefined behavior.

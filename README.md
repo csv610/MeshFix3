@@ -1,4 +1,4 @@
-# MeshFix V2.1 (Modernized Port)
+# MeshFix3  (Modernized Port)
 
 > **Disclaimer:** This project is a modernized port of the original **MeshFix** developed by **Marco Attene**. I take no credit for the original algorithms, research, or core logic. This version is intended to provide a cleaner, more modern interface for macOS and Linux users. The original source code and research remain the intellectual property of the original author and IMATI-GE / CNR.
 

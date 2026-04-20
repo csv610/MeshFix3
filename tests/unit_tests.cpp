@@ -1,4 +1,5 @@
 #include "point.h"
+#include "tin.h"
 #include <iostream>
 #include <cassert>
 #include <cmath>
@@ -60,10 +61,36 @@ void test_point_distance() {
     std::cout << "Point distance passed!" << std::endl;
 }
 
+void test_repair_report() {
+    std::cout << "Testing RepairReport..." << std::endl;
+
+    RepairReport report;
+    assert(!report.repairedSomething());
+
+    report.patched_holes = 1;
+    assert(report.repairedSomething());
+
+    report = RepairReport{};
+    report.degeneracies_before = 3;
+    report.degeneracies_after = 1;
+    assert(report.repairedSomething());
+
+    report = RepairReport{};
+    report.intersections_before = 5;
+    report.intersections_after = 5;
+    assert(!report.repairedSomething());
+
+    report.intersections_after = 2;
+    assert(report.repairedSomething());
+
+    std::cout << "RepairReport passed!" << std::endl;
+}
+
 int main() {
     try {
         test_point_basics();
         test_point_distance();
+        test_repair_report();
         std::cout << "\nAll unit tests passed successfully!" << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Test failed with exception: " << e.what() << std::endl;

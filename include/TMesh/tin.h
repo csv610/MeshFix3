@@ -46,7 +46,7 @@ struct RepairReport
 	int intersections_before = 0;
 	int intersections_after = 0;
 
-	bool repairedSomething() const
+	[[nodiscard]] bool repairedSomething() const
 	{
 		return joined_components > 0 ||
 			removed_components > 0 ||
@@ -54,6 +54,11 @@ struct RepairReport
 			degeneracies_after < degeneracies_before ||
 			intersections_after < intersections_before;
 	}
+};
+
+struct RepairOptions
+{
+	bool join_multiple_components = false;
 };
 
 //! Basic_TMesh
@@ -678,7 +683,7 @@ class Basic_TMesh
 			int removeDegenerateTriangles();
 
 			//! Counts the exact zero-area triangles currently present in the mesh.
-			int countExactDegeneracies() const;
+			[[nodiscard]] int countExactDegeneracies() const;
 
 		//! Calls 'removeDegenerateTriangles()' and, if some degeneracies remain,
 		//! removes them and fills the resulting holes. Then tries again and, if
@@ -694,12 +699,15 @@ class Basic_TMesh
 		//! true only if all the intersections could be removed.
 		bool strongIntersectionRemoval(int max_iters);
 
-		//! Iteratively call strongDegeneracyRemoval and strongIntersectionRemoval
-		//! to produce an eventually clean mesh without degeneracies and intersections.
-		//! The two aforementioned methods are called up to max_iter times and
-		//! each of them is called using 'inner_loops' as a parameter.
-		//! Returns true only if the mesh could be completely cleaned.
-		bool meshclean(int max_iters = 10, int inner_loops = 3);
+			//! Iteratively call strongDegeneracyRemoval and strongIntersectionRemoval
+			//! to produce an eventually clean mesh without degeneracies and intersections.
+			//! The two aforementioned methods are called up to max_iter times and
+			//! each of them is called using 'inner_loops' as a parameter.
+			//! Returns true only if the mesh could be completely cleaned.
+			bool meshclean(int max_iters = 10, int inner_loops = 3);
+
+			//! Runs the MeshFix repair pipeline and records what changed.
+			void repair(const RepairOptions& options, RepairReport& report);
 
 		//! Removes overlapping triangles and return their number.
 		int removeOverlappingTriangles();
@@ -718,7 +726,7 @@ class Basic_TMesh
 			int selectIntersectingTriangles(UINT16 tris_per_cell = 50, bool justproper = false);
 
 			//! Counts the currently intersecting triangles and clears the selection afterwards.
-			int countSelfIntersectingTriangles(UINT16 tris_per_cell = 50, bool justproper = false);
+			[[nodiscard]] int countSelfIntersectingTriangles(UINT16 tris_per_cell = 50, bool justproper = false);
 
 
 		//! This is as coordBackApproximation() but it also checks for

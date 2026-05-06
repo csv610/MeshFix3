@@ -10,7 +10,7 @@ def run_command(cmd):
 
 def benchmark():
     # Configuration
-    scales = [1, 2, 3, 4, 5, 6, 7, 8] # Octahedron subdivision levels
+    scales = [1, 2, 3, 4] # Octahedron subdivision levels
     executable = os.path.abspath("./bin/MeshFix")
     results_file = "bench/scalability_results.csv"
     

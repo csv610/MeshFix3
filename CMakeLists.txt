@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 project(MeshFix VERSION 2.1 LANGUAGES C CXX)
 
+option(BUILD_DOCS "Build documentation" ON)
+option(ENABLE_COVERAGE "Enable code coverage" OFF)
+
 if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")
     set(CMAKE_BUILD_TYPE "Release")
@@ -67,3 +70,26 @@ set_target_properties(unit_tests PROPERTIES
 
 target_compile_options(MeshFix PRIVATE -Wall -Wextra -Wno-unused-parameter)
 target_compile_options(unit_tests PRIVATE -Wall -Wextra -Wno-unused-parameter)
+
+if(ENABLE_COVERAGE)
+    target_compile_options(unit_tests PRIVATE --coverage -fprofile-arcs -ftest-coverage)
+    target_link_options(unit_tests PRIVATE --coverage)
+endif()
+
+find_package(Doxygen)
+if(Doxygen_FOUND AND BUILD_DOCS)
+    set(DOXYGEN_OUTPUT_DIR "${CMAKE_BINARY_DIR}/docs")
+    configure_file("${PROJECT_SOURCE_DIR}/Doxyfile.in" "${CMAKE_BINARY_DIR}/Doxyfile" @ONLY)
+    add_custom_target(docs
+        ${DOXYGEN_EXECUTABLE} "${CMAKE_BINARY_DIR}/Doxyfile"
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+        COMMENT "Generating API documentation with Doxygen" VERBATIM
+    )
+    message(STATUS "Doxygen found. Run 'make docs' to generate documentation.")
+else()
+    message(STATUS "Doxygen not found or BUILD_DOCS is OFF. Skipping documentation.")
+endif()
+
+include(GNUInstallDirs)
+install(TARGETS MeshFix DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/TMesh)

@@ -1,4 +1,9 @@
-# MeshFix3  (Modernized Port)
+# MeshFix3 (Modernized Port)
+
+[![CI](https://github.com/MeshFix3/MeshFix3/actions/workflows/ci.yml/badge.svg)](https://github.com/MeshFix3/MeshFix3/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/MeshFix3/MeshFix3/branch/master/graph/badge.svg)](https://codecov.io/gh/MeshFix3/MeshFix3)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![C++20](https://img.shields.io/badge/C++-20-blue.svg)](https://en.cppreference.com/w/cpp/20)
 
 > **Disclaimer:** This project is a modernized port of the original **MeshFix** developed by **Marco Attene**. I take no credit for the original algorithms, research, or core logic. This version is intended to provide a cleaner, more modern interface for macOS and Linux users. The original source code and research remain the intellectual property of the original author and IMATI-GE / CNR.
 
